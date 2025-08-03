@@ -31,25 +31,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function addTask() {
-        let taskText = taskInput.value.trim();
-        if (taskText === '') {
-            alert('Please enter a task.');
+    function addTask(taskText = null, save = true) {
+        let text = taskText !== null ? taskText : taskInput.value.trim();
+        if (text === '') {
+            if (taskText === null) alert('Please enter a task.');
             return;
         }
         let tasks = getTasks();
-        tasks.push(taskText);
-        saveTasks(tasks);
+        tasks.push(text);
+        if (save) saveTasks(tasks);
         renderTasks();
-        taskInput.value = '';
+        if (taskText === null) taskInput.value = '';
     }
 
-    addButton.addEventListener('click', addTask);
+    function loadTasks() {
+        let storedTasks = getTasks();
+        storedTasks.forEach(taskText => addTask(taskText, false));
+    }
+
+    addButton.addEventListener('click', () => addTask());
     taskInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
             addTask();
         }
     });
 
-    renderTasks();
+    renderTasks(); // Initial render from Local Storage
 });
